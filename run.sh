@@ -1,1 +1,1 @@
-echo "i'm run.sh"
+echo "i'm run.sh" > result.txt
