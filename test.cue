@@ -9,10 +9,9 @@ import (
 
 dagger.#Plan & {
     actions: {
-  /*    hello: #AddHello & {
+      hello: #AddHello & {
            dir: client.filesystem.".".read.contents
       }
-  */
       shellrun: #RunHello & {
           dir: client.filesystem.".".read.contents
       }  
@@ -25,7 +24,6 @@ dagger.#Plan & {
 
 
 // Write a greeting to a file, and add it to a directory
-/*
 #AddHello: {
     // The input directory
     dir: dagger.#FS
@@ -42,19 +40,15 @@ dagger.#Plan & {
     // The directory with greeting message added
     result: write.output
 }
-*/
-#RunHello: {
+#RunHello:{
     _pull: docker.#Pull & {
-        source: "index.docker.io/ubuntu"
+        source: "index.docker.io/debian"
     }
     _image: _pull.output
     dir: dagger.#FS
     filename: "hello.sh"
     bash.#Run & {
         input: _image
-        script: {
-            directory: dir
-            filename: "hello.sh"
-        }
+        script: {contents: "echo hello"}
     }
 }
