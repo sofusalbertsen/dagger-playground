@@ -1,1 +1,3 @@
-echo "i'm run.sh" > result.txt
+echo "i'm run.sh" 
+touch text.txt
+ls

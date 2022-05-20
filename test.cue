@@ -3,6 +3,8 @@ package main
 import (
     "dagger.io/dagger"
     "dagger.io/dagger/core"
+    "universe.dagger.io/bash"
+    "universe.dagger.io/alpine"
 )
 
 dagger.#Plan & {
@@ -12,8 +14,11 @@ dagger.#Plan & {
             dir: client.filesystem.".".read.contents
         }
         shellrun: #RunHello & {
-            image: _pull.output
-        }  
+            _build: alpine.#Build & {
+			    packages: bash: _
+		    }
+		    image: _build.output
+        }
     }
     client: filesystem: ".": {
         read: contents: dagger.#FS
@@ -40,9 +45,16 @@ dagger.#Plan & {
     result: write.output
 }
 #RunHello:{
-    image:image
-    core.#Exec & {
-        input: image
-        args: ["ls"]
+    image: image
+    src: core.#Source & {
+        path: "."
+    }
+    bash.#Run & {
+
+        input:image
+        script: {
+            directory: src.output
+            filename: "run.sh"
+        }
     }
 }
